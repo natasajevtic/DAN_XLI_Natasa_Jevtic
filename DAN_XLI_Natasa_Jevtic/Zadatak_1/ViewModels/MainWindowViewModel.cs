@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
+using System.Threading;
 using System.Windows.Input;
 using Zadatak_1.Commands;
 
@@ -100,22 +103,49 @@ namespace Zadatak_1.ViewModels
         {
             this.main = main;
             //adding method to DoWork event
-            backgroundWorker.DoWork += DoWork;
+            backgroundWorker.DoWork += BW_DoWork;
             //adding method to ProgressChanged event
-            backgroundWorker.ProgressChanged += ProgressChanged;
+            backgroundWorker.ProgressChanged += BW_ProgressChanged;
             //adding method to RunWorkerCompleted event
-            backgroundWorker.RunWorkerCompleted += RunWorkerCompleted;
+            backgroundWorker.RunWorkerCompleted += BW_RunWorkerCompleted;
         }
-        public void DoWork(object sender, DoWorkEventArgs e)
+        /// <summary>
+        /// This method performs documents printing.
+        /// </summary>
+        /// <param name="sender">Object.</param>
+        /// <param name="e">DoWorkEventArgs object.</param>
+        public void BW_DoWork(object sender, DoWorkEventArgs e)
         {
-            
+            double number = Double.Parse(NumberOfCopies);
+            double result = 100 / number;
+            //creating files - copies of document and writing text in them
+            for (int i = 1; i <= number; i++)
+            {
+                Thread.Sleep(1000);
+                string file = string.Format(@"../../{0}.{1}_{2}_{3}_{4}_{5}.txt", i, DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year, DateTime.Now.Hour, DateTime.Now.Minute);
+                using (StreamWriter writer = new StreamWriter(file))
+                {
+                    writer.WriteLine(Text);
+                }
+                //invoking method that raises ProgressChanged event and passing the percentage of processing that is complete
+                backgroundWorker.ReportProgress(Convert.ToInt32(result * i));
+                //if cancelling requested
+                if (backgroundWorker.CancellationPending)
+                {
+                    //setting property to true
+                    e.Cancel = true;
+                    //passing zero to reset progress percentage
+                    backgroundWorker.ReportProgress(0);
+                    return;
+                }
+            }
         }
-        public void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        public void BW_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             
         }
 
-        public void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        public void BW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
            
         }
