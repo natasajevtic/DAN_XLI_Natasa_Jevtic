@@ -151,10 +151,28 @@ namespace Zadatak_1.ViewModels
             Percent = e.ProgressPercentage;
             Message = e.ProgressPercentage.ToString() + "%";
         }
-
+        /// <summary>
+        /// This method update user interface element to show state of document printing.
+        /// </summary>
+        /// <param name="sender">Object.</param>
+        /// <param name="e">RunWorkerCompletedEventArgs object.</param>
         public void BW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-           
+            //if printing cancelled
+            if (e.Cancelled)
+            {
+                Message = "Printing cancelled.";
+            }
+            //if some error occurred during document printing
+            else if (e.Error != null)
+            {
+                Message = e.Error.Message.ToString();
+            }
+            //if printing successfully finished
+            else
+            {
+                Message = "Printing completed.";
+            }
         }
         public bool CanStartExecute()
         {
