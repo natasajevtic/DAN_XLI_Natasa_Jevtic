@@ -134,7 +134,7 @@ namespace Zadatak_1.ViewModels
                     return;
                 }
                 using (StreamWriter writer = new StreamWriter(file))
-                {                    
+                {
                     writer.WriteLine(Text);
                 }
                 //invoking method that raises ProgressChanged event and passing the percentage of processing that is complete
@@ -224,15 +224,31 @@ namespace Zadatak_1.ViewModels
             {
                 MessageBox.Show(ex.ToString());
             }
-        }        
+        }
+        /// <summary>
+        /// This method canceling background operation of documents printing.
+        /// </summary>
         public void CancelExecute()
         {
-            
+            //cancelling documents printing
+            backgroundWorker.CancelAsync();
         }
-       
+        /// <summary>
+        /// This method checks if document printing can be canceled.
+        /// </summary>
+        /// <returns>True if canceling is possible, false if not.</returns>
         public bool CanCancelExecute()
         {
-            return false;
+            //if printing is running returns true and canceling is enabled
+            if (backgroundWorker.IsBusy)
+            {
+                return true;
+            }
+            //if condition is not true, returns false and calceling is disabled
+            else
+            {
+                return false;
+            }
         }
     }
 }
