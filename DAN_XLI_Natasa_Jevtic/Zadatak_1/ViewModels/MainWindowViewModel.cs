@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 using Zadatak_1.Commands;
 
@@ -123,12 +124,6 @@ namespace Zadatak_1.ViewModels
             {
                 Thread.Sleep(1000);
                 string file = string.Format(@"../../{0}.{1}_{2}_{3}_{4}_{5}.txt", i, DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year, DateTime.Now.Hour, DateTime.Now.Minute);
-                using (StreamWriter writer = new StreamWriter(file))
-                {
-                    writer.WriteLine(Text);
-                }
-                //invoking method that raises ProgressChanged event and passing the percentage of processing that is complete
-                backgroundWorker.ReportProgress(Convert.ToInt32(result * i));
                 //if cancelling requested
                 if (backgroundWorker.CancellationPending)
                 {
@@ -138,6 +133,12 @@ namespace Zadatak_1.ViewModels
                     backgroundWorker.ReportProgress(0);
                     return;
                 }
+                using (StreamWriter writer = new StreamWriter(file))
+                {                    
+                    writer.WriteLine(Text);
+                }
+                //invoking method that raises ProgressChanged event and passing the percentage of processing that is complete
+                backgroundWorker.ReportProgress(Convert.ToInt32(result * i));
             }
         }
         /// <summary>
@@ -174,21 +175,61 @@ namespace Zadatak_1.ViewModels
                 Message = "Printing completed.";
             }
         }
+        /// <summary>
+        /// This method checks if user input data is valid.
+        /// </summary>
+        /// <returns>True if data is valid, false if not.</returns>
         public bool CanStartExecute()
         {
-            return false;
+            try
+            {
+                //checking if input for text to print and number of documents copies is empty, and if input for number of copies is not positive number
+                //if condition is true, returns false and printing is disabled
+                if (String.IsNullOrEmpty(Text) || String.IsNullOrEmpty(NumberOfCopies) || !Int32.TryParse(NumberOfCopies, out int copies) || copies <= 0)
+                {
+                    return false;
+                }
+                //if condition is false, returns true and printing is enabled
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return false;
+            }
         }
-
+        /// <summary>
+        /// This method checks if printing is already started. If not started, runs documents printing.
+        /// </summary>
         public void StartExecute()
         {
-            
-        }
-
+            try
+            {
+                //checking if printing is already running
+                if (backgroundWorker.IsBusy)
+                {
+                    //id condition is true, display notification to user
+                    MessageBox.Show("Printing is in progress, please wait.");
+                }
+                //if condition is not true, runs printing
+                else
+                {
+                    backgroundWorker.RunWorkerAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }        
         public void CancelExecute()
         {
             
         }
-
+       
         public bool CanCancelExecute()
         {
             return false;
