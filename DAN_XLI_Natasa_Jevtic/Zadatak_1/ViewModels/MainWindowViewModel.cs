@@ -140,9 +140,16 @@ namespace Zadatak_1.ViewModels
                 }
             }
         }
+        /// <summary>
+        /// This method updates user interface element with the progress made so far.
+        /// </summary>
+        /// <param name="sender">Object.</param>
+        /// <param name="e">ProgressChangedEventArgs object.</param>
         public void BW_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            
+            //setting value of user interface elements
+            Percent = e.ProgressPercentage;
+            Message = e.ProgressPercentage.ToString() + "%";
         }
 
         public void BW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
