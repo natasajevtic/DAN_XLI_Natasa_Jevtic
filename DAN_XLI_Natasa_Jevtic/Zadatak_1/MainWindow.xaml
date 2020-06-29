@@ -5,8 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Zadatak_1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Documents printing" Height="450" Width="450" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
     <Grid>
-        
-    </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="6"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="1" Grid.Row="1" Content="Text to print:"/>
+        <TextBox Grid.Column ="1" Grid.Row="3" Width="200" Height="200" TextWrapping="Wrap" Text="{Binding Text}"/>
+        <Label Grid.Column="3" Grid.Row="1" Content="Number of copies:"/>
+        <TextBox Grid.Column="3" Grid.Row="3" Width="100" Height="20" VerticalAlignment="Top" Text="{Binding NumberOfCopies}"/>
+        <Button Grid.Column="1" Grid.Row="5" Content="Start printing" Width="100" HorizontalAlignment="Left" Command="{Binding Start}"/>
+        <Button Grid.Column="3" Grid.Row="5" Content="Cancel printing" Command="{Binding Cancel}"/>
+        <ProgressBar Grid.Column="1" Grid.Row="7" Height="20" Grid.ColumnSpan="3" Value="{Binding Percent, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+        <Label Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3" Content="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" HorizontalAlignment="Center"/>
+</Grid>
 </Window>
